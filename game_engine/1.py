@@ -1,10 +1,8 @@
-class Table:
+class TableInfo:
     def __init__(self, num_seats=7) -> None:
         self.num_seats = num_seats
         self.seats = [None] * num_seats
-        self.dealer = None
         self.players = []
-        self.deck = Deck()  # Assuming you have a Deck class for managing cards
 
     def sit_down(self, player, seat_num):
         if self.seats[seat_num] is None:
@@ -34,6 +32,21 @@ class Table:
         return table_info
     
 
+class TableGameplay(TableInfo):
+    def __init__(self, num_seats=7) -> None:
+        super().__init__(num_seats)
+        self.dealer = None
+        self.deck = Deck()
+        self.community_cards = [None] * 5
+
+
 class Player:
     def __init__(self) -> None:
-        pass
+        self.name = None
+        self.chips = None
+        self.hole_cards = (None, None)
+
+
+class Deck:
+    def __init__(self) -> None:
+        self.deck = [None] * 52
