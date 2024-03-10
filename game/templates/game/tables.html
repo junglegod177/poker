@@ -1,0 +1,14 @@
+{% extends "registration/layout.html" %}
+
+{% block title %}
+    Tables
+{% endblock %}
+
+{% block body %}
+    <h2>
+        Hello, {{ name }}
+    </h2>
+    <div>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+{% endblock %}
