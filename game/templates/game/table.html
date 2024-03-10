@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Hold'em Poker</title>
+    <link rel="stylesheet" href="{% static 'game/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <img class="table" src="{% static 'game/images/table.jpg' %}" alt="None">
+        <div class="overlay-elements">
+            {% if not player.get_is_seated %}
+                <form action="{% url 'table' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" name="sit" value="Sit on table">
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
