@@ -12,11 +12,9 @@ def login_page(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username)
-        print(password)
         user = authenticate(request, username=username, password=password)
-        print(user)
         if user is not None:
+            print(user)
             login(request, user)
             return redirect(reverse('tables', kwargs={'name': username}))
         else:
