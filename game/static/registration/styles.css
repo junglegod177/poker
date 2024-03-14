@@ -28,3 +28,30 @@ body {
     left: 10vw;
     width: 28vw;
 }
+
+.tables {
+    margin-top: 22vh;
+    width: 36vw;
+}
+
+.tables th:nth-child(4),
+.tables td:nth-child(4) {
+    background-color: black;
+    border-color: black;
+}
+
+.table-position {
+    text-align: left;
+}
+
+.tiny-color {
+    background-color: red;
+    border-color: red;
+    font-size: 8px;
+    border-radius: 50%;
+}
+
+.tiny-color:hover {
+    background-color: rgb(184, 0, 0);
+    border-color: rgb(184, 0, 0);
+}
