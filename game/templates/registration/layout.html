@@ -11,11 +11,8 @@
 <body>
     <div class="conatiner">
         <img class="background" src="{% static 'registration/images/background-lobby.jpg' %}" alt="None">
-        <div class="overlay-elements">
-            {% block body %}
-            {% endblock %}
-        </div>
+        {% block body %}
+        {% endblock %}
     </div>
-    
 </body>
 </html>

@@ -5,10 +5,44 @@
 {% endblock %}
 
 {% block body %}
+<div class="overlay-elements-tables">
     <h2>
         Hello, {{ name }}
     </h2>
     <div>
         <a href="{% url 'logout' %}">Logout</a>
     </div>
+    <div class="tables">
+        <table class="table table-sm table-dark">
+            <thead>
+                <tr>
+                  <th scope="col">Table name</th>
+                  <th scope="col">Blinds</th>
+                  <th scope="col">Players</th>
+                  <th scope="col">PLACEHOLDER</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <th scope="row">Monte Carlo</th>
+                  <td>1/2</td>
+                  <td>0/7</td>
+                  <td>JOIN</td>
+                </tr>
+                <tr>
+                  <th scope="row">Las Vegas</th>
+                  <td>2/4</td>
+                  <td>0/7</td>
+                  <td>JOIN</td>
+                </tr>
+                <tr>
+                  <th scope="row">Jakarta</th>
+                  <td>5/10
+                  <td>0/7</td>
+                  <td>JOIN</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

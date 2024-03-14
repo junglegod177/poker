@@ -14,7 +14,6 @@ def login_page(request):
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            print(user)
             login(request, user)
             return redirect(reverse('tables', kwargs={'name': username}))
         else:
@@ -45,10 +44,13 @@ def register(request):
     return render(request, 'registration/register.html', {'form': form})
 
 
-def tables(request, name):
-    return render(request, "game/tables.html", {
-        "name": name
-    })
+def tables(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        return render(request, "game/tables.html", {
+            "name": username
+        })
+    return redirect('login')
 
 
 def table(request):

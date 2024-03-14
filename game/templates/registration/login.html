@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+<div class="overlay-elements">
     {% if message %}
         <h2>{{ message }}</h2>
     {% endif %}
@@ -23,4 +24,5 @@
     <div class="register">
         Don't have an account yet? <a href="{% url 'register' %}">Register now</a>
     </div>
+</div>
 {% endblock %}
