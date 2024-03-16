@@ -1,7 +1,7 @@
 {% extends "registration/layout.html" %}
 
 {% block title %}
-    Tables
+    Tables <!--LOBBY-->
 {% endblock %}
 
 {% block body %}
@@ -16,31 +16,21 @@
         <table class="table table-sm table-dark table-position">
             <thead>
                 <tr>
-                  <th scope="col">Table name</th>
-                  <th scope="col">Blinds</th>
-                  <th scope="col">Players</th>
-                  <th scope="th-black"></th>
+                    <th scope="col">Table name</th>
+                    <th scope="col">Blinds</th>
+                    <th scope="col">Players</th>
+                    <th scope="th-black"></th>
                 </tr>
             </thead>
             <tbody>
+                {% for table in tables %}
                 <tr>
-                  <th scope="row">Monte Carlo</th>
-                  <td>1/2</td>
-                  <td>0/7</td>
-                  <td><a class="btn btn-primary tiny-color" href="#" role="button">Join</a></td>
+                    <th scope="row">{{ table.name }}</th>
+                    <td>{{ table.blinds }}</td>
+                    <td>{{ table.players }}/7</td>
+                    <td><a class="btn btn-primary tiny-color" href="{% url 'table' table.name %}" role="button">Join</a></td>
                 </tr>
-                <tr>
-                  <th scope="row">Las Vegas</th>
-                  <td>2/4</td>
-                  <td>0/7</td>
-                  <td><a class="btn btn-primary tiny-color" href="#" role="button">Join</a></td>
-                </tr>
-                <tr>
-                  <th scope="row">Jakarta</th>
-                  <td>5/10
-                  <td>0/7</td>
-                  <td><a class="btn btn-primary tiny-color" href="#" role="button">Join</a></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

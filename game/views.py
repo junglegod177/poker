@@ -1,11 +1,11 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .forms import RegistrationForm
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
-from .util import Player
+from .models import Table
+import json
 
 # Create your views here.
 def login_page(request):
@@ -15,7 +15,7 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect(reverse('tables', kwargs={'name': username}))
+            return redirect('tables')
         else:
             return render(request, "registration/login.html")
             #TODO
@@ -47,22 +47,43 @@ def register(request):
 def tables(request):
     if request.user.is_authenticated:
         username = request.user.username
+
+        tables = Table.objects.all()
+        print(tables)
+
         return render(request, "game/tables.html", {
-            "name": username
+            "name": username,
+            "tables": tables
         })
     return redirect('login')
 
 
-def table(request):
-    if request.method == "POST":
-        player = Player()
-        player.set_is_sitting(True)
+def table(request, table_name):
+    return render(request, "game/table.html", {
+        "table_name": table_name
+    })
 
-        return render(request, "game/table.html")
-    print(request.session)
 
-    return render(request, "game/table.html")
-
+def action(request, action):
+    if action == "sit":
+        data = json.loads(request.body)
+        table_name = data.get('table_name')
+        table = Table.objects.get(name = table_name)
+        if table.players < 7:
+            table.players += 1
+            table.save()
+            return JsonResponse({'success': True, 'players': table.players})
+        else:
+            return JsonResponse({'success': False, 'error': 'Table not found'})
+    
+    if action == "unsit":
+        data = json.loads(request.body)
+        table_name = data.get('table_name')
+        table = Table.objects.get(name = table_name)
+        table.players -= 1
+        table.save()
+        return JsonResponse({'success': True, 'players': table.players})
+    
 
 def error(request):
     return HttpResponse("Error")

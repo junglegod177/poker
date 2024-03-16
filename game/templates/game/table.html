@@ -11,13 +11,55 @@
     <div class="container">
         <img class="table" src="{% static 'game/images/table.jpg' %}" alt="None">
         <div class="overlay-elements">
-            {% if not player.get_is_seated %}
-                <form action="{% url 'table' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="submit" name="sit" value="Sit on table">
-                </form>
-            {% endif %}
+            <input type="submit" id="sit" value="Sit on table">
         </div>
     </div>
+    <script>
+        const sit_button = document.getElementById('sit');
+        var is_sitting = false;
+        
+        sit_button.addEventListener('click', function() {
+            fetch(`/action/sit/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ table_name: '{{ table_name }}'})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Player sat on table. New player count:', data.players);
+                    is_sitting = true
+                    sit_button.remove();
+                    // Update UI to reflect new player count
+                } else {
+                    console.error('Error sitting on table:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error sitting on table:', error);
+            })
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+            if (is_sitting) {
+                fetch('/action/unsit/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'},
+                    body: JSON.stringify({ table_name: '{{ table_name }}'})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        is_sitting = false
+                        // Update UI to reflect new player count
+                    }
+                })
+            }
+        });
+    </script>
 </body>
 </html>
