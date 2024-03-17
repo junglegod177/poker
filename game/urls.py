@@ -10,6 +10,5 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path("tables/", views.tables, name="tables"),
     path("table/<str:table_name>/", views.table, name="table"),
-    path("action/<str:action>/", views.action, name="action"),
     path("error/", views.error, name="error")
 ]

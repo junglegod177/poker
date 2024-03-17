@@ -17,48 +17,24 @@
     <script>
         const sit_button = document.getElementById('sit');
         var is_sitting = false;
+
+        const socket = new WebSocket('ws://localhost:8000/ws/table/{{ table_name }}/');
+        
+        socket.onclose = function(event) {
+            socket.send(JSON.stringify({
+                action: 'unsit',
+                table_name: '{{ table_name }}',
+            }))
+        };
         
         sit_button.addEventListener('click', function() {
-            fetch(`/action/sit/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ table_name: '{{ table_name }}'})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Player sat on table. New player count:', data.players);
-                    is_sitting = true
-                    sit_button.remove();
-                    // Update UI to reflect new player count
-                } else {
-                    console.error('Error sitting on table:', data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error sitting on table:', error);
-            })
-        });
-
-        window.addEventListener('beforeunload', function(event) {
-            if (is_sitting) {
-                fetch('/action/unsit/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}'},
-                    body: JSON.stringify({ table_name: '{{ table_name }}'})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        is_sitting = false
-                        // Update UI to reflect new player count
-                    }
-                })
-            }
+            is_sitting = true
+            sit_button.remove();
+            // Update UI to reflect new player count
+            socket.send(JSON.stringify({
+                action: 'sit',
+                table_name: '{{ table_name }}',
+            }))
         });
     </script>
 </body>

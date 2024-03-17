@@ -64,26 +64,5 @@ def table(request, table_name):
     })
 
 
-def action(request, action):
-    if action == "sit":
-        data = json.loads(request.body)
-        table_name = data.get('table_name')
-        table = Table.objects.get(name = table_name)
-        if table.players < 7:
-            table.players += 1
-            table.save()
-            return JsonResponse({'success': True, 'players': table.players})
-        else:
-            return JsonResponse({'success': False, 'error': 'Table not found'})
-    
-    if action == "unsit":
-        data = json.loads(request.body)
-        table_name = data.get('table_name')
-        table = Table.objects.get(name = table_name)
-        table.players -= 1
-        table.save()
-        return JsonResponse({'success': True, 'players': table.players})
-    
-
 def error(request):
     return HttpResponse("Error")
