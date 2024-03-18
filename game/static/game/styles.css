@@ -25,7 +25,139 @@ body {
     height: 100vh;
 }
 
-#sit {
-    margin-left: 6vw;
-    margin-top: 39vh;
+#player1 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 4vh;
+    margin-left: 46vw;
+    display: none;
 }
+
+.player1-info {
+    position: absolute;
+    margin-top: 15vh;
+    margin-left: 47.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player2 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 8vh;
+    margin-left: 78vw;
+    display: none;
+}
+
+.player2-info {
+    position: absolute;
+    margin-top: 19vh;
+    margin-left: 79.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player3 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 35vh;
+    margin-left: 90vw;
+    display: none;
+}
+
+.player3-info {
+    position: absolute;
+    margin-top: 46vh;
+    margin-left: 91.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player4 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 56vh;
+    margin-left: 78vw;
+    display: none;
+}
+
+.player4-info {
+    position: absolute;
+    margin-top: 67vh;
+    margin-left: 79.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player5 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 62vh;
+    margin-left: 46vw;
+    display: none;
+}
+
+.player5-info {
+    position: absolute;
+    margin-top: 73vh;
+    margin-left: 47.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player6 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 56vh;
+    margin-left: 14vw;
+    display: none;
+}
+
+.player6-info {
+    position: absolute;
+    margin-top: 67vh;
+    margin-left: 15.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player7 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 35vh;
+    margin-left: 2vw;
+    display: none;
+}
+
+.player7-info {
+    position: absolute;
+    margin-top: 46vh;
+    margin-left: 3.7vw;
+    text-align: center;
+    color: white;
+}
+
+#player8 {
+    position: absolute;
+    width: 8vw;
+    height: 10vh;
+    margin-top: 8vh;
+    margin-left: 14vw;
+    display: none;
+}
+
+.player8-info {
+    position: absolute;
+    margin-top: 19vh;
+    margin-left: 15.7vw;
+    text-align: center;
+    color: white;
+}
+

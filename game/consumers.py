@@ -19,18 +19,18 @@ class TablePlayer(WebsocketConsumer):
         if action == 'sit':
             table_name = data.get('table_name')
             table = Table.objects.get(name = table_name)
-            if table.players < 7:
-                table.players += 1
+            if table.players_number < 7:
+                table.players_number += 1
                 table.save()
                 self.send(text_data=json.dumps({
-                    'message': table.players,                
+                    'message': table.players_number,                
                 }))
 
         elif action == 'unsit':
             table_name = data.get('table_name')
             table = Table.objects.get(name = table_name)
-            table.players -= 1
+            table.players_number -= 1
             table.save()
             self.send(text_data=json.dumps({
-                'message': table.players,                
+                'message': table.players_number,                
             }))

@@ -11,32 +11,81 @@
     <div class="container">
         <img class="table" src="{% static 'game/images/table.jpg' %}" alt="None">
         <div class="overlay-elements">
-            <input type="submit" id="sit" value="Sit on table">
+            <div class="player1">
+                <img id="player1" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player1-info">
+                    <div class="player1-username"></div>
+                    <div class="player1-money"></div>
+                </div>
+            </div>
+            <div class="player2">
+                <img id="player2" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player2-info">
+                    <div class="player2-username"></div>
+                    <div class="player2-money"></div>
+                </div>
+            </div>
+            <div class="player3">
+                <img id="player3" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player3-info">
+                    <div class="player3-username"></div>
+                    <div class="player3-money"></div>
+                </div>
+            </div>
+            <div class="player4">
+                <img id="player4" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player4-info">
+                    <div class="player4-username"></div>
+                    <div class="player4-money"></div>
+                </div>
+            </div>
+            <div class="player5">
+                <img id="player5" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player5-info">
+                    <div class="player5-username"></div>
+                    <div class="player5-money"></div>
+                </div>
+            </div>
+            <div class="player6">
+                <img id="player6" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player6-info">
+                    <div class="player6-username"></div>
+                    <div class="player6-money"></div>
+                </div>
+            </div>
+            <div class="player7">
+                <img id="player7" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player7-info">
+                    <div class="player7-username"></div>
+                    <div class="player7-money"></div>
+                </div>
+            </div>
+            <div class="player8">
+                <img id="player8" src="{% static 'game/images/player-icon2.png' %}" alt="None"> 
+                <div class="player8-info">
+                    <div class="player8-username"></div>
+                    <div class="player8-money"></div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
         const sit_button = document.getElementById('sit');
-        var is_sitting = false;
 
         const socket = new WebSocket('ws://localhost:8000/ws/table/{{ table_name }}/');
         
-        sit_button.addEventListener('click', function() {
-            is_sitting = true
-            sit_button.remove();
-            // Update UI to reflect new player count
+        socket.onopen = function(event) {
             socket.send(JSON.stringify({
                 action: 'sit',
                 table_name: '{{ table_name }}',
             }))
-        });
+        }
 
         window.addEventListener('beforeunload', function(event) {
-            if (is_sitting) {
-                socket.send(JSON.stringify({
-                    action: 'unsit',
-                    table_name: '{{ table_name }}',
-                }))
-            }
+            socket.send(JSON.stringify({
+                action: 'unsit',
+                table_name: '{{ table_name }}',
+            }))
         });
     </script>
 </body>
