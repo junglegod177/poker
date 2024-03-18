@@ -20,13 +20,6 @@
 
         const socket = new WebSocket('ws://localhost:8000/ws/table/{{ table_name }}/');
         
-        socket.onclose = function(event) {
-            socket.send(JSON.stringify({
-                action: 'unsit',
-                table_name: '{{ table_name }}',
-            }))
-        };
-        
         sit_button.addEventListener('click', function() {
             is_sitting = true
             sit_button.remove();
@@ -35,6 +28,15 @@
                 action: 'sit',
                 table_name: '{{ table_name }}',
             }))
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+            if (is_sitting) {
+                socket.send(JSON.stringify({
+                    action: 'unsit',
+                    table_name: '{{ table_name }}',
+                }))
+            }
         });
     </script>
 </body>
