@@ -49,7 +49,6 @@ def tables(request):
         username = request.user.username
 
         tables = Table.objects.all()
-        print(tables)
 
         return render(request, "game/tables.html", {
             "name": username,

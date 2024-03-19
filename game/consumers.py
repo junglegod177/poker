@@ -1,13 +1,17 @@
 import json
 from .models import Table
-
 from channels.generic.websocket import WebsocketConsumer
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 class TablePlayer(WebsocketConsumer):
     def connect(self):
         self.user = self.scope['user']
         self.accept()
+
+        self.table_group_name = "table_%s" % self.user
+        print(self.table_group_name)
 
     def disconnect(self, close_code):
         pass
@@ -23,6 +27,7 @@ class TablePlayer(WebsocketConsumer):
                 table.players_number += 1
                 table.save()
                 self.send(text_data=json.dumps({
+                    'type': 'sit',
                     'message': table.players_number,                
                 }))
 
