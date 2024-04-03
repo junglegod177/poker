@@ -10,15 +10,46 @@ class Player(models.Model):
 
     def __str__(self):
         return self.username
+    
+    def join_table(self, table):
+        occupied_seats = Seat.objects.filter(table=table).order_by('seat_number')
+        for i in range(1, 9):
+            if not occupied_seats or occupied_seats[0].seat_number > i:
+                break
+            occupied_seats = occupied_seats[1:]
+        else:
+            raise Exception('Table is full')
+
+        # Create a new Seat instance
+        Seat.objects.create(table=table, player=self, seat_number=i)
+
+        table.players_number += 1
+        table.save()
+
+    def leave_table(self, table):
+        Seat.objects.get(table=table, player=self).delete()
+
+        self.delete()
+
+        table.players_number -= 1
+        table.save()
+
 
 class Table(models.Model):
     name = models.CharField(max_length=50)
     blinds = models.CharField(max_length=15)
     players_number = models.IntegerField(default=0)
-    players = models.ManyToManyField(Player, related_name='tables', blank=True)
 
     def __str__(self):
         return self.name
+    
+class Seat(models.Model):
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
+    seat_number = models.IntegerField()
+
+    def __str__(self):
+        return f"Community cards for {self.table.name}"
 
 class CommunityCards(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)

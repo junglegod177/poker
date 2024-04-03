@@ -13,17 +13,16 @@ class TablePlayer(WebsocketConsumer):
         self.table_group_name = f"table_{sanitized_table_name}"
 
         async_to_sync(self.channel_layer.group_add)(
-            self.table_group_name, self.channel_name
+            self.table_group_name,
+            self.channel_name
         )
+
         self.accept()
 
-        #TODO ako je sto pun
+        player = Player.objects.create(username=self.user.username)
         table = Table.objects.get(name = table_name)
-        if table.players_number < 8:
-            table.players_number += 1
-            player = Player.objects.create(username=self.user.username)
-            table.players.add(player)
-            table.save()
+        player.join_table(table)
+
 
         #tip vodi na funkciju, slicno ka view u url
         """
@@ -35,7 +34,6 @@ class TablePlayer(WebsocketConsumer):
     def disconnect(self, close_code):
         table_name = self.scope['url_route']['kwargs']['table_name']
         table = Table.objects.get(name = table_name)
-        table.players_number -= 1
         player = Player.objects.get(username=self.user.username)
         player.delete()
         table.save()
