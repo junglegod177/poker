@@ -34,7 +34,6 @@ class Player(models.Model):
         self.delete()
 
         table.players_number -= 1
-        print("AAAAAA")
         table.save()
 
 

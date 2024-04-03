@@ -76,10 +76,22 @@
             const data = JSON.parse(event.data);
 
             const action = data.action;
-
+            
+            //ovo i player_join treba se sklopi
             if(action == "table_state"){
                 for(const state of data.state){
-                    console.log(state);
+                    const username = state.username;
+                    const seat_position = state.position;
+                    const chips = state.chips
+
+                    const playerSeat = ".player" + seat_position;
+                    document.querySelector(playerSeat).style.display = "block";
+
+                    const playerUsername = playerSeat + "-username";
+                    document.querySelector(playerUsername).innerHTML = username;
+
+                    const playerMoney = playerSeat + "-money";
+                    document.querySelector(playerMoney).innerHTML = chips;
                 }
             }
 
