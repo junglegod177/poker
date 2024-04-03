@@ -72,27 +72,11 @@
     <script>
         const socket = new WebSocket('ws://localhost:8000/ws/table/{{ table_name }}/');
 
-        socket.onopen = function(event) {
-            socket.send(JSON.stringify({
-                action: 'sit',
-                table_name: '{{ table_name }}',
-            }))
-        }
-
         socket.onmessage = function(event) {
             const data = JSON.parse(event.data);
 
-            if (data.type === 'sit') {
-                
-            }
+            
         }
-
-        window.addEventListener('beforeunload', function(event) {
-            socket.send(JSON.stringify({
-                action: 'unsit',
-                table_name: '{{ table_name }}',
-            }))
-        });
     </script>
 </body>
 </html>
