@@ -21,7 +21,23 @@ class TablePlayer(WebsocketConsumer):
 
         player = Player.objects.create(username=self.user.username)
         table = Table.objects.get(name = table_name)
-        player.join_table(table)
+        seat_position = player.join_table(table)
+
+        table_state = table.get_table_state()
+
+        self.send(text_data=json.dumps({
+            "action": "table_state",
+            "state": table_state
+        }))
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.table_group_name,
+            {
+                "type": "player_join",
+                "position": seat_position,
+                "username": player.username
+            }
+        )
 
 
         #tip vodi na funkciju, slicno ka view u url
@@ -35,12 +51,19 @@ class TablePlayer(WebsocketConsumer):
         table_name = self.scope['url_route']['kwargs']['table_name']
         table = Table.objects.get(name = table_name)
         player = Player.objects.get(username=self.user.username)
-        player.delete()
+        player.leave_table(table)
         table.save()
 
     def receive(self, text_data):
         data = json.loads(text_data)
         action = data.get('action')
+
+    def player_join(self, event):
+        self.send(text_data=json.dumps({
+            "action": "player_join",
+            "position": event['position'],
+            "username": event['username']
+        }))
 
 
     """

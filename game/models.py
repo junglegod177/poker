@@ -26,12 +26,15 @@ class Player(models.Model):
         table.players_number += 1
         table.save()
 
+        return i
+
     def leave_table(self, table):
         Seat.objects.get(table=table, player=self).delete()
 
         self.delete()
 
         table.players_number -= 1
+        print("AAAAAA")
         table.save()
 
 
@@ -42,6 +45,19 @@ class Table(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_table_state(self):
+        seats = Seat.objects.filter(table=self).order_by('seat_number')
+        state = [
+            {
+                "position": seat.seat_number,
+                "username": seat.player.username,
+                "chips": seat.player.chips
+            }
+            for seat in seats
+        ]
+
+        return state
     
 class Seat(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)

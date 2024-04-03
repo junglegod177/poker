@@ -75,7 +75,27 @@
         socket.onmessage = function(event) {
             const data = JSON.parse(event.data);
 
-            
+            const action = data.action;
+
+            if(action == "table_state"){
+                for(const state of data.state){
+                    console.log(state);
+                }
+            }
+
+            else if (action == "player_join"){
+                const username = data.username;
+                const seat_position = data.position;
+
+                const playerSeat = ".player" + seat_position;
+                document.querySelector(playerSeat).style.display = "block";
+
+                const playerUsername = playerSeat + "-username";
+                document.querySelector(playerUsername).innerHTML = username;
+
+                const playerMoney = playerSeat + "-money";
+                document.querySelector(playerMoney).innerHTML = 10000;
+            }
         }
     </script>
 </body>
