@@ -73,11 +73,13 @@ class Table(models.Model):
 
     def pay_blinds(self):
         small_blind, big_blind = self.blinds.split('/')
-        dealer_seat = Seat.objects.get(table=self, seat_number=self.dealer)
+        dealer_seat = self.get_dealer_seat()
 
         if self.players_number == 2:
             dealer_player = dealer_seat.player
             dealer_player.chips -= int(big_blind)
+
+            dealer_player.save()
 
             # Get the other player
             next_seat_number = self.get_next_occupied_seat(self.dealer)
@@ -86,8 +88,12 @@ class Table(models.Model):
             small_blind_player = small_blind_seat.player
             small_blind_player.chips -= int(small_blind)
 
+            small_blind_player.save()
         else:
             pass
+
+    def get_dealer_seat(self):
+        return Seat.objects.get(table=self, seat_number=self.dealer)
 
     def get_next_occupied_seat(self, current_seat):
         next_seat_number = current_seat + 1
@@ -101,6 +107,8 @@ class Table(models.Model):
 
     def get_table_state(self):
         seats = Seat.objects.filter(table=self).order_by('seat_number')
+        dealer_seat = self.get_dealer_seat()
+
         state = [
             {
                 "position": seat.seat_number,

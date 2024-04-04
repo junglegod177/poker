@@ -98,9 +98,9 @@
 
             else if (action == "player_join") {
                 const username = data.username;
-                const seat_position = data.position;
+                const seatPosition = data.position;
 
-                const playerSeat = ".player" + seat_position;
+                const playerSeat = ".player" + seatPosition;
                 document.querySelector(playerSeat).style.display = "block";
 
                 const playerUsername = playerSeat + "-username";
@@ -111,8 +111,19 @@
             }
 
             else if (action == "deal_cards") {
+                const playerCards = {};
+                const seatPosition = data.seat_position;
                 const cards = data.cards;
-                console.log(cards);
+                const money = data.chips;
+
+                const playerSeat = ".player" + seatPosition;
+                const playerMoney = playerSeat + "-money";
+
+                document.querySelector(playerMoney).innerHTML = money;
+
+                playerCards[seatPosition] = cards;
+
+                console.log(playerCards);
             }
         }
     </script>

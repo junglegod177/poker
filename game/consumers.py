@@ -86,7 +86,8 @@ class TablePlayer(WebsocketConsumer):
             self.send(text_data=json.dumps({
                 "action": "deal_cards",
                 "seat_position": seat.seat_number,
-                "cards": json.loads(seat.player.hand)
+                "cards": json.loads(seat.player.hand),
+                "chips": seat.player.chips
             }))
 
 
