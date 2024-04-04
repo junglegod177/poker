@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib import admin
+import json, random
 
 # Create your models here.
 
 class Player(models.Model):
     username = models.CharField(max_length=50)
     chips = models.IntegerField(default=10000)
-    cards = models.CharField(max_length=5, blank=True, null=True)
+    hand = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -20,7 +21,6 @@ class Player(models.Model):
         else:
             raise Exception('Table is full')
 
-        # Create a new Seat instance
         Seat.objects.create(table=table, player=self, seat_number=i)
 
         table.players_number += 1
@@ -41,9 +41,34 @@ class Table(models.Model):
     name = models.CharField(max_length=50)
     blinds = models.CharField(max_length=15)
     players_number = models.IntegerField(default=0)
+    deck = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.name
+    
+    def can_start_game(self):
+        return True if self.players_number > 1 else False
+    
+    def start(self):
+        self.deck = self.create_deck()
+        self.deal_cards()
+
+    def create_deck(self):
+        ranks = range(2, 15)
+        suits = range(4)
+        deck = [(rank, suit) for rank in ranks for suit in suits]
+        random.shuffle(deck)
+        return json.dumps(deck)  # Convert the deck to a string
+
+    def deal_cards(self):
+        deck = json.loads(self.deck)  # Convert the deck back to a list
+        seats = Seat.objects.filter(table=self)
+        for seat in seats:
+            seat.player.hand = json.dumps([deck.pop(), deck.pop()])
+            seat.player.save()
+        self.deck = json.dumps(deck)
+        self.save()
+        # PODJI DA SE VIDE KARTE NEKAKO DEALTANE SU
     
     def get_table_state(self):
         seats = Seat.objects.filter(table=self).order_by('seat_number')
@@ -51,7 +76,8 @@ class Table(models.Model):
             {
                 "position": seat.seat_number,
                 "username": seat.player.username,
-                "chips": seat.player.chips
+                "chips": seat.player.chips,
+                "playersNumber": seat.table.players_number
             }
             for seat in seats
         ]
@@ -64,7 +90,7 @@ class Seat(models.Model):
     seat_number = models.IntegerField()
 
     def __str__(self):
-        return f"Community cards for {self.table.name}"
+        return f"Seats for {self.table.name}"
 
 class CommunityCards(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
@@ -72,6 +98,25 @@ class CommunityCards(models.Model):
 
     def __str__(self):
         return f"Community cards for {self.table.name}"
+    
+class Card:
+    RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    SUITS = {
+        0 : "H",
+        1 : "S",
+        2 : "D",
+        3 : "C"
+    }
+
+    def __init__(self, rank, suit):
+        if rank not in self.RANKS or suit not in self.SUITS:
+            raise ValueError("Invalid card rank or suit")
+        self.rank = rank
+        self.suit = suit
+
+    def __str__(self):
+        return f"{self.rank}{self.suit}"
+
 
 
 admin.site.register(Table)

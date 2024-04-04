@@ -1,5 +1,5 @@
 import json, re
-from .models import Table, Player
+from .models import Table, Player, Seat
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 
@@ -25,11 +25,6 @@ class TablePlayer(WebsocketConsumer):
 
         table_state = table.get_table_state()
 
-        self.send(text_data=json.dumps({
-            "action": "table_state",
-            "state": table_state
-        }))
-
         async_to_sync(self.channel_layer.group_send)(
             self.table_group_name,
             {
@@ -39,6 +34,13 @@ class TablePlayer(WebsocketConsumer):
             }
         )
 
+        self.send(text_data=json.dumps({
+            "action": "table_state",
+            "state": table_state
+        }))
+
+        if table.can_start_game():
+            self.start_game(table)
 
         #tip vodi na funkciju, slicno ka view u url
         """
@@ -64,6 +66,28 @@ class TablePlayer(WebsocketConsumer):
             "position": event['position'],
             "username": event['username']
         }))
+
+    def start_game(self, table):
+        table.start()
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.table_group_name,
+            {
+                "type": "game_started",
+            }
+        )
+
+    def game_started(self, event):
+
+        table_name = self.scope['url_route']['kwargs']['table_name']
+        table = Table.objects.get(name=table_name)
+        seats = Seat.objects.filter(table=table)
+        for seat in seats:
+            self.send(text_data=json.dumps({
+                "action": "deal_cards",
+                "seat_position": seat.seat_number,
+                "cards": json.loads(seat.player.hand)
+            }))
 
 
     """

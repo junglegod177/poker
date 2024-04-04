@@ -76,13 +76,14 @@
             const data = JSON.parse(event.data);
 
             const action = data.action;
-            
+
             //ovo i player_join treba se sklopi
-            if(action == "table_state"){
+            if(action == "table_state") {
                 for(const state of data.state){
                     const username = state.username;
                     const seat_position = state.position;
                     const chips = state.chips
+                    const playersNumber = state.playersNumber
 
                     const playerSeat = ".player" + seat_position;
                     document.querySelector(playerSeat).style.display = "block";
@@ -95,7 +96,7 @@
                 }
             }
 
-            else if (action == "player_join"){
+            else if (action == "player_join") {
                 const username = data.username;
                 const seat_position = data.position;
 
@@ -107,6 +108,11 @@
 
                 const playerMoney = playerSeat + "-money";
                 document.querySelector(playerMoney).innerHTML = 10000;
+            }
+
+            else if (action == "deal_cards") {
+                const cards = data.cards;
+                console.log(cards);
             }
         }
     </script>
