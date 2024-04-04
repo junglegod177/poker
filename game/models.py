@@ -42,6 +42,7 @@ class Table(models.Model):
     blinds = models.CharField(max_length=15)
     players_number = models.IntegerField(default=0)
     deck = models.CharField(max_length=1000, blank=True, null=True)
+    dealer = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -52,6 +53,7 @@ class Table(models.Model):
     def start(self):
         self.deck = self.create_deck()
         self.deal_cards()
+        self.pay_blinds()
 
     def create_deck(self):
         ranks = range(2, 15)
@@ -68,8 +70,35 @@ class Table(models.Model):
             seat.player.save()
         self.deck = json.dumps(deck)
         self.save()
-        # PODJI DA SE VIDE KARTE NEKAKO DEALTANE SU
-    
+
+    def pay_blinds(self):
+        small_blind, big_blind = self.blinds.split('/')
+        dealer_seat = Seat.objects.get(table=self, seat_number=self.dealer)
+
+        if self.players_number == 2:
+            dealer_player = dealer_seat.player
+            dealer_player.chips -= int(big_blind)
+
+            # Get the other player
+            next_seat_number = self.get_next_occupied_seat(self.dealer)
+            small_blind_seat = Seat.objects.get(table=self, seat_number=next_seat_number)
+            
+            small_blind_player = small_blind_seat.player
+            small_blind_player.chips -= int(small_blind)
+
+        else:
+            pass
+
+    def get_next_occupied_seat(self, current_seat):
+        next_seat_number = current_seat + 1
+
+        while True:
+            next_seat = Seat.objects.get(table=self, seat_number=next_seat_number)
+            if next_seat.player is not None:
+                return next_seat_number
+
+            next_seat_number = (next_seat_number % self.players.count()) + 1
+
     def get_table_state(self):
         seats = Seat.objects.filter(table=self).order_by('seat_number')
         state = [
